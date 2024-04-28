@@ -1,8 +1,8 @@
 #include <iostream>
-
+#include "spdlog/spdlog.h"
 
 int main()
 {
-    std::cout << "hello world\n";
+    spdlog::info("Welcome to mugrad!");
     return 0;
 }
