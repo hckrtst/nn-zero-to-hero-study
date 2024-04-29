@@ -1,3 +1,4 @@
 cmake_minimum_required (VERSION 3.25)
 add_subdirectory(third-party/spdlog)
+add_subdirectory(third-party/matplotplusplus)
 add_subdirectory(micrograd)

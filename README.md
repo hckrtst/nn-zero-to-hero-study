@@ -9,4 +9,8 @@ This has notes and examples from https://karpathy.ai/zero-to-hero.html using C++
 
 ## Third party dependencies
 * spdlog
+* matplot
+
+## System dependencies
+* gnuplot
 
