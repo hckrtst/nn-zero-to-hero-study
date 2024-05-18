@@ -10,36 +10,52 @@
 #include <xtensor/xview.hpp>
 namespace mp = matplot;
 
+namespace mg{
+
+template <typename T>
+T f(T x)
+{
+  return 3*pow(x,2) - 4*x + 5;
+}
+
+template <>
+xt::xarray<float> f(xt::xarray<float> x)
+{
+  auto res = x;
+  for (auto it = res.begin(); it != res.end(); it++)
+  {
+    *it = 3*pow(*it,2) - 4*(*it) + 5.0;
+  }
+  return res;
+}
+
+#define DBG spdlog::info
+
+}; // namespace
+
 int main()
 {
-    spdlog::info("Welcome to micrograd!");
+    spdlog::info("Welcome to the micrograd playground!");
     
-    // test xtensor
-    xt::xarray<double> arr1
-      {{1.0, 2.0, 3.0},
-       {2.0, 5.0, 7.0},
-       {2.0, 5.0, 7.0}};
 
-    xt::xarray<double> arr2
-      {5.0, 6.0, 7.0};
+    DBG("I got this value {}", mg::f(3.0));
+    auto xs = xt::arange<float>(-5.0, 5.0, 0.25);
 
-    xt::xarray<double> res = xt::view(arr1, 1) + arr2;
+    std::ostringstream oss;
+    oss << xs;
+    DBG("range {}", oss.str());
 
-    std::ostringstream ss;
-    ss << res;
-    spdlog::info("I got this array {}", ss.str());
-    
-    // test matplot
-    std::vector<double> x = mp::linspace(0, 2 * mp::pi);
-    std::vector<double> y = mp::transform(x, [](auto x) { return sin(x); });
+    auto ys = mg::f<xt::xarray<float>>(xs);
+    { 
+      std::ostringstream oss;
+      oss << ys;
+      DBG("resulting range {}", oss.str());
+    }
 
-    mp::plot(x, y, "-o");
+
+    mp::plot(xt::xarray<float>(xs), xt::xarray<float>(ys), "-o");
     mp::hold(mp::on);
-    mp::plot(x, mp::transform(y, [](auto y) { return -y; }), "--xr");
-    mp::plot(x, mp::transform(x, [](auto x) { return x / mp::pi - 1.; }), "-:gs");
-    mp::plot({1.0, 0.7, 0.4, 0.0, -0.4, -0.7, -1}, "k");
-
     mp::show();
-
     return 0;
 }
+
